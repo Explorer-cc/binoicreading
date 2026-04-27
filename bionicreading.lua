@@ -3,9 +3,7 @@ local M = {}
 local glyph_id = node.id("glyph")
 local math_id = node.id("math")
 local disc_id = node.id("disc")
-local glue_id = node.id("glue")
 local kern_id = node.id("kern")
-local penalty_id = node.id("penalty")
 
 local boundaries = {
   { 0, 4, 12, 17, 24, 29, 35, 42, 48 },
@@ -15,10 +13,8 @@ local boundaries = {
   { 0, 2, 3, 5, 6, 7, 8, 10, 11, 12, 14, 15, 17, 19, 20, 21, 23, 24, 25, 26, 28, 29, 30, 32, 33, 34, 35, 37, 38, 39, 41, 42, 43, 44, 46, 47, 48 },
 }
 
-M.enabled = false
-M.fixation_point = 1
+M.attribute = nil
 M.font_map = {}
-M.state_stack = {}
 M.callbacks_registered = false
 
 local function is_ascii_letter(char)
@@ -51,11 +47,22 @@ local function fixation_length(word_length, fixation_point)
   return length
 end
 
-local function bold_word(word, has_letter)
+local function node_marker(n)
+  if not M.attribute then
+    return nil
+  end
+  local marker = node.has_attribute(n, M.attribute)
+  if marker and marker >= 1 and marker <= 5 then
+    return marker
+  end
+  return nil
+end
+
+local function bold_word(word, has_letter, fixation_point)
   if not has_letter or #word == 0 then
     return
   end
-  local bold_count = fixation_length(#word, M.fixation_point)
+  local bold_count = fixation_length(#word, fixation_point)
   for i = 1, bold_count do
     local glyph = word[i]
     local bold_font = M.font_map[glyph.font]
@@ -66,21 +73,30 @@ local function bold_word(word, has_letter)
 end
 
 function M.process_list(head)
-  if not M.enabled then
+  if not M.attribute then
     return head
   end
 
   local word = {}
   local has_letter = false
+  local fixation_point = nil
 
   local function flush()
-    bold_word(word, has_letter)
+    if fixation_point then
+      bold_word(word, has_letter, fixation_point)
+    end
     word = {}
     has_letter = false
+    fixation_point = nil
   end
 
   for n in node.traverse(head) do
-    if n.id == glyph_id and is_ascii_alnum(n.char) then
+    local marker = node_marker(n)
+    if n.id == glyph_id and marker and is_ascii_alnum(n.char) then
+      if fixation_point and fixation_point ~= marker then
+        flush()
+      end
+      fixation_point = marker
       word[#word + 1] = n
       if is_ascii_letter(n.char) then
         has_letter = true
@@ -97,14 +113,8 @@ function M.process_list(head)
   return head
 end
 
-function M.set_fixation_point(value)
-  value = tonumber(value) or 1
-  if value < 1 then
-    value = 1
-  elseif value > 5 then
-    value = 5
-  end
-  M.fixation_point = value
+function M.set_attribute(attribute)
+  M.attribute = tonumber(attribute)
 end
 
 function M.register_font_pair(normal_id, bold_id)
@@ -114,31 +124,6 @@ function M.register_font_pair(normal_id, bold_id)
     M.font_map[normal_id] = bold_id
   end
 end
-
-function M.start(fixation_point, active)
-  table.insert(M.state_stack, {
-    enabled = M.enabled,
-    fixation_point = M.fixation_point,
-  })
-  M.set_fixation_point(fixation_point)
-  M.enabled = active ~= false
-end
-
-function M.stop()
-  local previous = table.remove(M.state_stack)
-  if previous then
-    M.enabled = previous.enabled
-    M.fixation_point = previous.fixation_point
-  else
-    M.enabled = false
-  end
-end
-
-M.enable = function(fixation_point)
-  M.start(fixation_point, true)
-end
-
-M.disable = M.stop
 
 function M.register_callbacks()
   if M.callbacks_registered then

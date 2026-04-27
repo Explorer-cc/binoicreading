@@ -9,6 +9,10 @@ materials/
 *.brf
 *.fdb_latexmk
 *.fls
+*.glg
+*.glo
+*.gls
+*.hd
 *.idx
 *.ilg
 *.ind

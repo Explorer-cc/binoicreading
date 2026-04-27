@@ -49,12 +49,17 @@
 \NewDocumentCommand \bionicsetup { m }
   { \keys_set:nn { bionicreading } {#1} }
 
+\cs_new_protected:Npn \__bionicreading_begin:n #1
+  {
+    \keys_set:nn { bionicreading } {#1}
+    \__bionicreading_lua_register_font_pair:
+    \__bionicreading_set_attribute:
+  }
+
 \NewDocumentCommand \bionic { O{} +m }
   {
     \group_begin:
-      \keys_set:nn { bionicreading } {#1}
-      \__bionicreading_lua_register_font_pair:
-      \__bionicreading_set_attribute:
+      \__bionicreading_begin:n {#1}
       #2
     \group_end:
   }
@@ -97,9 +102,7 @@
 \NewDocumentCommand \bionicstart { O{} }
   {
     \group_begin:
-      \keys_set:nn { bionicreading } {#1}
-      \__bionicreading_lua_register_font_pair:
-      \__bionicreading_set_attribute:
+      \__bionicreading_begin:n {#1}
   }
 
 \NewDocumentCommand \bionicstop { }

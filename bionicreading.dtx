@@ -7,8 +7,44 @@
 \setstretch{1.25}
 \setmainfont{TeX Gyre Pagella}
 \EnableCrossrefs
-\CodelineIndex
 \RecordChanges
+\DoNotIndex{
+  \NeedsTeXFormat,
+  \ProvidesExplPackage,
+  \RequirePackage,
+  \ExplSyntaxOn,
+  \ExplSyntaxOff,
+  \NewDocumentCommand,
+  \NewDocumentEnvironment,
+  \bfseries,
+  \directlua,
+  \font,
+  \fontid,
+  \par,
+  \setluatexattribute,
+  \unsetluatexattribute,
+  \newluatexattribute,
+  \bool_if:NTF,
+  \bool_new:N,
+  \cs_new_protected:Npn,
+  \group_begin:,
+  \group_end:,
+  \int_compare:nNnTF,
+  \int_new:N,
+  \int_set:Nn,
+  \int_use:N,
+  \keys_define:nn,
+  \keys_set:nn,
+  \msg_error:nnn,
+  \msg_fatal:nn,
+  \msg_new:nnn,
+  \sys_if_engine_luatex:F,
+  \g__bionicreading_attribute,
+  \l__bionicreading_bold_font_int,
+  \l__bionicreading_enabled_bool,
+  \l__bionicreading_fixation_point_int,
+  \l__bionicreading_normal_font_int
+}
 \begin{document}
   \DocInput{\jobname.dtx}
 \end{document}
@@ -74,9 +110,9 @@
 %
 % \begin{function}{bionicpar}
 %   \begin{syntax}
-%     \cs{begin}\{bionicpar\}\oarg{options}
+%     \texttt{\string\begin\{bionicpar\}}\oarg{options}
 %       \meta{paragraphs}
-%     \cs{end}\{bionicpar\}
+%     \texttt{\string\end\{bionicpar\}}
 %   \end{syntax}
 %   A paragraph environment for bionic reading.  The environment uses the same
 %   LuaTeX attribute mechanism as \cs{bionic}, but it also terminates the

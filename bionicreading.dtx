@@ -212,6 +212,38 @@
 %   {\BionicDocText
 %      {\texttt{fixation-point} & 1--5 & Selects the fixation table. \\}
 %      {\texttt{fixation-point} & 1--5 & 选择 fixation 表。 \\}}
+% \newcommand{\BionicDocFixationTitle}
+%   {\BionicDocText{Fixation-point algorithm}{Fixation-point 算法}}
+% \newcommand{\BionicDocFixationA}
+%   {\BionicDocText
+%      {The value of \texttt{fixation-point} is not a percentage.  It selects one
+%       of five boundary tables.  During Lua node processing, every marked ASCII
+%       word is measured by glyph count.  The backend then looks up the first
+%       boundary in the selected table that is greater than or equal to the word
+%       length.}
+%      {\texttt{fixation-point} 的值不是百分比，而是用于选择五张 boundary 表之一。
+%       在 Lua 节点处理阶段，每个带标记的 ASCII 单词会先按字形数量计算词长。
+%       后端随后在所选表中查找第一个大于或等于该词长的 boundary。}}
+% \newcommand{\BionicDocFixationB}
+%   {\BionicDocText
+%      {If the matched boundary is at position \meta{i}, the number of bold glyphs
+%       is computed as \(\meta{word length} - (\meta{i} - 1)\).  The backend then
+%       switches the first computed number of glyph nodes to the registered bold
+%       font.  If the word is longer than all boundaries in the selected table,
+%       only the first glyph is bolded.}
+%      {如果匹配到的 boundary 位于第 \meta{i} 项，则加粗字形数计算为
+%       \(\meta{词长} - (\meta{i} - 1)\)。随后后端会把单词开头对应数量的字形节点
+%       切换到已注册的粗体字体。如果词长超过所选表中的全部 boundary，
+%       则只加粗第一个字形。}}
+% \newcommand{\BionicDocFixationC}
+%   {\BionicDocText
+%      {Higher \texttt{fixation-point} values use denser boundary tables.  For the
+%       same word length, a denser table is usually matched at a later position,
+%       so the formula subtracts a larger value and produces a shorter bold
+%       prefix.}
+%      {\texttt{fixation-point} 越大，所用的 boundary 表越密。对于同一个词长，
+%       更密的表通常会在更靠后的项上匹配，因此公式会减去更大的值，
+%       得到更短的加粗前缀。}}
 % \newcommand{\BionicDocExamplesTitle}{\BionicDocText{Examples}{示例}}
 % \newcommand{\BionicDocExamplesText}
 %   {\BionicDocText
@@ -309,6 +341,29 @@
 % \bottomrule
 % \end{tabular}
 % \end{center}
+%
+% \section{\BionicDocFixationTitle}
+%
+% \BionicDocFixationA
+%
+% \begin{verbatim}
+% fixation-point = 1: {0, 4, 12, 17, 24, 29, 35, 42, 48}
+% fixation-point = 2: {0, 2, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29,
+%                      31, 33, 35, 37, 39, 41, 43, 45, 47, 49}
+% fixation-point = 3: {0, 2, 4, 5, 6, 8, 9, 11, 14, 15, 17, 18, 20, 0, 21, 23,
+%                      24, 26, 27, 29, 30, 32, 33, 35, 36, 38, 39, 41, 42, 44,
+%                      45, 47, 48}
+% fixation-point = 4: {0, 2, 4, 5, 6, 8, 9, 10, 12, 13, 15, 16, 17, 19, 20, 22,
+%                      24, 25, 26, 28, 29, 30, 32, 33, 34, 35, 37, 38, 39, 40,
+%                      42, 43, 44, 45, 47, 48, 49}
+% fixation-point = 5: {0, 2, 3, 5, 6, 7, 8, 10, 11, 12, 14, 15, 17, 19, 20, 21,
+%                      23, 24, 25, 26, 28, 29, 30, 32, 33, 34, 35, 37, 38, 39,
+%                      41, 42, 43, 44, 46, 47, 48}
+% \end{verbatim}
+%
+% \BionicDocFixationB
+%
+% \BionicDocFixationC
 %
 % \section{\BionicDocExamplesTitle}
 %
